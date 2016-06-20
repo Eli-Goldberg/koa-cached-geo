@@ -1,0 +1,32 @@
+{
+  "name": "koa-cached-geo",
+  "version": "1.0.0",
+  "description": "A simple koa-based api returning geo data. Cached with Redis, authenticated with basic HTTP auh.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha ./test --harmony",
+    "start": "node --harmony server.js"
+  },
+  "dependencies": {
+    "koa": "^1.2.0",
+    "koa-router": "^5.4.0",
+    "lodash": "^4.13.1"
+  },
+  "devDependencies": {
+    "co-mocha": "^1.1.2",
+    "co-supertest": "0.0.10",
+    "mocha": "^2.5.3",
+    "supertest": "^1.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eli-Goldberg/koa-cached-geo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eli-Goldberg/koa-cached-geo/issues"
+  },
+  "homepage": "https://github.com/Eli-Goldberg/koa-cached-geo#readme"
+}
