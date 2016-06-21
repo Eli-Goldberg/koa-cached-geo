@@ -1,11 +1,11 @@
 'use strict';
 
 const router = require('koa-router')();
-const { geoAddress } = require('../config/config');
 const request = require('koa-request');
+var { geoCode } = require('../config/config');
 
 function validateParams(params) {
-  var err;
+  let err;
 
   if (Object.keys(params).length !== 1) {
     err = { error: `Only 'address' param allowed` };
@@ -24,31 +24,26 @@ router.get('/geocode', function* (next) {
   if (err) {
     this.status = 400;
     this.body = err;
+    return;
   }
-  else {
-    var options = {
-      url: geoAddress,
-      headers: { 'User-Agent': 'request' },
-      qs: params
-    };
 
-    var response = yield request(options); 
-    var data = JSON.parse(response.body);
+  geoCode = Object.assign(geoCode, { qs: params });
+  const response = yield request(geoCode);
+  const data = JSON.parse(response.body);
 
-    this.status = 200;
+  this.status = 200;
 
-    if (data.results.length == 0) {
-      this.body = { };
-      return;
-    }
+  if (data.results.length == 0) {
+    this.body = {};
+    return;
+  }
 
-    try { 
-      var [{geometry:{location:{lat, lng:lon}}}] = data.results;
-      this.body = { lat, lon };
-    } catch (er) {
-      this.status = 400;
-      this.body = { error: 'Unkown error' }
-    }
+  try {
+    var [{geometry: {location: {lat, lng: lon}}}] = data.results;
+    this.body = { lat, lon };
+  } catch (er) {
+    this.status = 400;
+    this.body = { error: 'Unkown error' }
   }
 
 });
