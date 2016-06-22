@@ -9,6 +9,7 @@
     "debug": "node-debug --harmony  --harmony_destructuring server.js"
   },
   "dependencies": {
+    "co": "^4.6.0",
     "koa": "^1.2.0",
     "koa-qs": "^2.0.0",
     "koa-request": "^1.0.0",

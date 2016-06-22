@@ -2,7 +2,27 @@
 
 const router = require('koa-router')();
 const request = require('koa-request');
+const co = require('co');
 var { wikiMedia } = require('../config/config');
+var { requestCache } = require('./middleware');
+
+router.use(requestCache());
+
+router.get('/wikiNearby', function* (next) {
+  const params = this.query;
+  const err = validateParams(params);
+  if (err) {
+    this.status = 400;
+    this.body = err;
+    return;
+  }
+
+  const ggscoord = `${params.lat}|${params.lon}`;
+  wikiMedia.qs['ggscoord'] = ggscoord;
+  const response = yield request(wikiMedia);
+  this.body = yield formatData(response);
+  this.status = 200;
+});
 
 function validateParams(params) {
   let err;
@@ -43,24 +63,8 @@ function formatData(response) {
 
       body = results;
     }
-    yield body;
-  }
+    return body;
+  };
 }
-
-router.get('/wikiNearby', function* (next) {
-  const params = this.query;
-  const err = validateParams(params);
-  if (err) {
-    this.status = 400;
-    this.body = err;
-    return;
-  }
-
-  const ggscoord = `${params.lat}|${params.lon}`;
-  wikiMedia.qs['ggscoord'] = ggscoord;
-  const response = yield request(wikiMedia);
-  this.body = yield formatData(response);
-  this.status = 200;
-});
 
 module.exports = router;

@@ -37,7 +37,7 @@ describe('Geocode api', function () {
             .expect(fnError)
             .end();
     });
-    
+
     it('should return an object with lat+lon', function* () {
         yield request
             .get('/geocode')
@@ -50,6 +50,29 @@ describe('Geocode api', function () {
                 expect(res.body).to.include.keys('lat', 'lon');
             })
             .expect(200)
+            .end();
+    });
+
+    it('should cache geoCode after the first time', function* () {
+        yield request
+            .get('/geoCode')
+            .query({
+                address: 'Tel aviv'
+            })
+            .expect(200)
+            .expect(function (res) {
+                expect(res.headers).not.to.include.key("x-cached");
+            })
+            .end();
+        yield request
+            .get('/geoCode')
+            .query({
+                address: 'Tel aviv'
+            })
+            .expect(200)
+            .expect(function (res) {
+                expect(res.headers).to.include.key("x-cached");
+            })
             .end();
     });
 });

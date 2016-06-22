@@ -45,4 +45,34 @@ describe('wikiNearby api', function () {
             .expect(200)
             .end();
     });
+
+    it('should cache wikiNearby after the first time', function* () {
+        yield request
+            .get('/purgeCache')
+            .expect(200)
+            .end();
+
+        yield request
+            .get('/wikiNearby')
+            .query({
+                lat: 37.7856,
+                lon: -122.403
+            })
+            .expect(200)
+            .expect(function (res) {
+                expect(res.headers).not.to.include.key("x-cached");
+            })
+            .end();
+        yield request
+            .get('/wikiNearby')
+            .query({
+                lat: 37.7856,
+                lon: -122.403
+            })
+            .expect(200)
+            .expect(function (res) {
+                expect(res.headers).to.include.key("x-cached");
+            })
+            .end();
+    });
 });
