@@ -21,5 +21,9 @@ module.exports = {
             ggsradius: 10000,
             ggslimit: 50
         }
+    },
+    auth: {
+        user: 'admin',
+        pass: 'pass'
     }
 };

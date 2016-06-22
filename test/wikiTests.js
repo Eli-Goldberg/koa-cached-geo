@@ -48,7 +48,7 @@ describe('wikiNearby api', function () {
 
     it('should cache wikiNearby after the first time', function* () {
         yield request
-            .get('/purgeCache')
+            .post('/purgeCache')
             .expect(200)
             .end();
 

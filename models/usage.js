@@ -1,7 +1,6 @@
 'use strict';
 
-const co = require('co'),
-    usage = [];
+var usage = [];
 
 module.exports = {
     save: function (url) {
@@ -13,11 +12,11 @@ module.exports = {
     },
     getAll: function () {
         return function* () {
-            yield usage;
+            return usage;
         }
     },
-    clean: function () {
-        return function* () {
+    clear: function() {
+        return function *() {
             usage = [];
         }
     }
