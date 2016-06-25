@@ -10,8 +10,6 @@ const app = require('koa')(),
 
 require('koa-qs')(app);
 
-// const cache = require('./routes/cache');
-
 app.use(errHandler());
 app.use(usage());
 app.use(apiUsage.routes());

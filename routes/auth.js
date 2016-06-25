@@ -3,8 +3,6 @@ const auth = require('http-auth'),
  basic = auth.basic({
     realm: "auth",
     function (username, password, callback) { 
-        // Custom authentication
-        // Use callback(error) if you want to throw async error.
         callback(username === user && password === pass);
     }
 });
