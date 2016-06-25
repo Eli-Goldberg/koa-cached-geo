@@ -1,4 +1,4 @@
-var app = require('../server');
+var app = require('../app');
 var request = require('co-supertest').agent(app.listen());
 var { assert, expect } = require('chai');
 var Cache = require('../models/cache');

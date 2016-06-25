@@ -1,7 +1,6 @@
 'use strict';
 
 const router = require('koa-router')();
-const request = require('koa-request');
 var { geoCode } = require('../config/config');
 var { requestCache } = require('./middleware');
 
@@ -22,6 +21,8 @@ router.use(requestCache());
 
 // responds to /geocode and /wikiNearby
 router.get('/geocode', function* (next) {
+  const request = require('koa-request');
+
   const params = this.query;
   const err = validateParams(params);
   if (err) {

@@ -1,7 +1,6 @@
 'use strict';
 
 const router = require('koa-router')();
-const request = require('koa-request');
 const co = require('co');
 var { wikiMedia } = require('../config/config');
 var { requestCache } = require('./middleware');
@@ -9,6 +8,8 @@ var { requestCache } = require('./middleware');
 router.use(requestCache());
 
 router.get('/wikiNearby', function* (next) {
+  const request = require('koa-request');
+
   const params = this.query;
   const err = validateParams(params);
   if (err) {

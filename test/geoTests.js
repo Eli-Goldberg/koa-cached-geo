@@ -1,7 +1,12 @@
-var app = require('../server');
-var request = require('co-supertest').agent(app.listen());
+var app = require('../app');
+var agent = require('co-supertest').agent(app.listen());
 var expect = require('chai').expect;
 require('co-mocha');
+
+var request = require('koa-request');
+var sinon = require('sinon-es6');
+var mockery = require('mockery');
+var requestStub;
 
 describe('Geocode api', function () {
     var fnError = (res) => {
@@ -9,14 +14,49 @@ describe('Geocode api', function () {
         expect(res.body).to.include.keys('error');
     };
 
+    var fakeResult = {
+        "results": [{
+            "geometry": {
+                "location": {
+                    "lat": 31.768319,
+                    "lng": 35.21371
+                }
+            }
+        }]
+    };
+
+    before(function (done) {
+        mockery.enable({
+            warnOnReplace: false,
+            warnOnUnregistered: false,
+            useCleanCache: true
+        });
+
+        requestStub = sinon.stub();
+
+        // replace the module `request` with a stub object
+        mockery.registerMock('koa-request', requestStub);
+
+        requestStub.returns(function (cb) {
+            cb(null, { body: JSON.stringify(fakeResult) });
+        });
+
+        done();
+
+    });
+    after(function (done) {
+        mockery.disable();
+        done();
+    });
+
     it('should only accept one param', function* () {
-        yield request
+        yield agent
             .get('/geocode')
             .expect(400)
             .expect(fnError)
             .end();
 
-        yield request
+        yield agent
             .get('/geocode')
             .query({
                 address: 'RishonLezion',
@@ -28,7 +68,7 @@ describe('Geocode api', function () {
     });
 
     it('should only allow the \'address\' param', function* () {
-        yield request
+        yield agent
             .get('/geocode')
             .query({
                 addres: 'Jerusalem'
@@ -39,7 +79,7 @@ describe('Geocode api', function () {
     });
 
     it('should return an object with lat+lon', function* () {
-        yield request
+        yield agent
             .get('/geocode')
             .query({
                 address: 'Tel Aviv'
@@ -54,7 +94,8 @@ describe('Geocode api', function () {
     });
 
     it('should cache geoCode after the first time', function* () {
-        yield request
+        
+        yield agent
             .get('/geoCode')
             .query({
                 address: 'Tel aviv'
@@ -64,7 +105,7 @@ describe('Geocode api', function () {
                 expect(res.headers).not.to.include.key("x-cached");
             })
             .end();
-        yield request
+        yield agent
             .get('/geoCode')
             .query({
                 address: 'Tel aviv'

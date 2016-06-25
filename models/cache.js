@@ -1,7 +1,6 @@
 'use strict';
 
-var co = require('co'),
-    cache = [];
+var cache = [];
 
 module.exports = {
     save: function (url, res) {

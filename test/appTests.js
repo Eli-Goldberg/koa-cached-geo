@@ -1,4 +1,4 @@
-var app = require('../server');
+var app = require('../app');
 var request = require('co-supertest').agent(app.listen());
 require('co-mocha');
 
