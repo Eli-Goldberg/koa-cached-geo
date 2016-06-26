@@ -4,9 +4,9 @@
   "description": "A simple koa-based api returning geo data. Cached with Redis, authenticated with basic HTTP auh.",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --harmony  --harmony_destructuring ./test",
-    "start": "node --harmony --harmony_destructuring server.js",
-    "debug": "node-debug --harmony  --harmony_destructuring server.js"
+    "test": "./node_modules/mocha/bin/mocha --harmony ./test",
+    "start": "node --harmony server.js",
+    "debug": "node-debug --harmony  server.js"
   },
   "dependencies": {
     "co": "^4.6.0",
