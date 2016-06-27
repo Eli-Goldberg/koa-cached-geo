@@ -49,12 +49,7 @@ function formatData(response) {
 
             const item = data[val];
 
-            // nested-destructuring default value bug forces to check this 
-            if (!item.thumbnail) {
-              item.thumbnail = { source: '' };
-            }
-
-            var { title, thumbnail: {source: thumbnailUri}, coordinates: [{lat, lon}]} = item;
+            var { title, thumbnail: {source: thumbnailUri} = { source: '' }, coordinates: [{lat, lon}]} = item;
             return {
               title,
               thumbnailUri,

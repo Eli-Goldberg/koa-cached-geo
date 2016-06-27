@@ -29,6 +29,10 @@
     "type": "git",
     "url": "git+https://github.com/Eli-Goldberg/koa-cached-geo.git"
   },
+  "engineStrict": true,
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
