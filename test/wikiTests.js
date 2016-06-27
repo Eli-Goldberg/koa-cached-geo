@@ -1,6 +1,9 @@
 var app = require('../app');
 var agent = require('co-supertest').agent(app.listen());
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
+var should = chai.should();
+chai.use(require('chai-subset'));
 require('co-mocha');
 
 var request = require('koa-request');
@@ -15,30 +18,37 @@ describe('wikiNearby api', function () {
     };
 
     var fakeResult = {
-        body: {
-            query: {
-                pages: {
-                    "someId": {
-                        "pageid": 1284671,
-                        "ns": 0,
-                        "title": "Yerba Buena Gardens",
-                        "index": 0,
-                        "coordinates": [
-                            {
-                                "lat": 37.785607,
-                                "lon": -122.402691,
-                                "primary": "",
-                                "globe": "earth"
-                            }
-                        ],
-                        "thumbnail": {
-                            "source": "/some_path_to_jpg.jpg",
-                            "width": 144,
-                            "height": 108
+        query: {
+            pages: {
+                "someId": {
+                    "pageid": 1284671,
+                    "ns": 0,
+                    "title": "Yerba Buena Gardens",
+                    "index": 0,
+                    "coordinates": [
+                        {
+                            "lat": 37.785607,
+                            "lon": -122.402691,
+                            "primary": "",
+                            "globe": "earth"
                         }
+                    ],
+                    "thumbnail": {
+                        "source": "/some_path_to_jpg.jpg",
+                        "width": 144,
+                        "height": 108
                     }
                 }
             }
+        }
+    }
+
+    var testedResult = {
+        "title": "Yerba Buena Gardens",
+        "thumbnailUri": "/some_path_to_jpg.jpg",
+        "coordinates": {
+            "lat": 37.785607,
+            "lon": -122.402691,
         }
     }
 
@@ -102,6 +112,9 @@ describe('wikiNearby api', function () {
                 lon: -122.403
             })
             .expect(200)
+            .expect(function (res) {
+                res.body.should.containSubset([testedResult]);
+            })
             .end();
     });
 

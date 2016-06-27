@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "chai": "^2.3.0",
+    "chai-subset": "^1.2.2",
     "co-mocha": "^1.1.2",
     "co-supertest": "0.0.10",
     "mocha": "^2.5.3",
