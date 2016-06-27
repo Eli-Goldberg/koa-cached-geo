@@ -36,35 +36,38 @@ function validateParams(params) {
 
 function formatData(response) {
   return function* () {
-    var body = [];
-    if (response.body.query) {
-      const {query: {pages: data}} = JSON.parse(response.body);
+    let results = [];
+    try {
 
-      let results = Object.keys(data)
-        .map((val) => {
+      let body = JSON.parse(response.body);
 
-          const item = data[val];
+      if (body.query) {
+        const {query: {pages: data}} = body;
 
-          // nested-destructuring default value bug forces to check this 
-          if (!item.thumbnail) {
-            item.thumbnail = { source: '' };
-          }
+        results = Object.keys(data)
+          .map((val) => {
 
-          try {
+            const item = data[val];
+
+            // nested-destructuring default value bug forces to check this 
+            if (!item.thumbnail) {
+              item.thumbnail = { source: '' };
+            }
+
             var { title, thumbnail: {source: thumbnailUri}, coordinates: [{lat, lon}]} = item;
             return {
               title,
               thumbnailUri,
               coordinates: { lat, lon }
             };
-          } catch (err) {
-            console.log(err);
-          }
-        });
+          });
+      }
 
-      body = results;
+    } catch (err) {
+      console.log(err);
     }
-    return body;
+
+    return results;
   };
 }
 
