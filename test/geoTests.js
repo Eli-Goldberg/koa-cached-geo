@@ -1,4 +1,5 @@
 var app = require('../app');
+var Cache = require('../models/cache');
 var agent = require('co-supertest').agent(app.listen());
 var chai = require('chai');
 var expect = chai.expect;
@@ -101,7 +102,8 @@ describe('Geocode api', function () {
     });
 
     it('should cache geoCode after the first time', function* () {
-
+        sinon.spy(Cache, 'get');
+        sinon.spy(Cache, 'save');
         yield agent
             .get('/geoCode')
             .query({
@@ -110,6 +112,8 @@ describe('Geocode api', function () {
             .expect(200)
             .expect(function (res) {
                 expect(res.headers).not.to.include.key("x-cached");
+                Cache.save.calledOnce.should.be.true;
+                Cache.get.calledTwice.should.be.false;
             })
             .end();
         yield agent
@@ -120,6 +124,8 @@ describe('Geocode api', function () {
             .expect(200)
             .expect(function (res) {
                 expect(res.headers).to.include.key("x-cached");
+                Cache.save.calledTwice.should.be.false;
+                Cache.get.calledTwice.should.be.true;
             })
             .end();
     });
