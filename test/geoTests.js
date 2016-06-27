@@ -1,6 +1,9 @@
 var app = require('../app');
 var agent = require('co-supertest').agent(app.listen());
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
+var should = chai.should();
+chai.use(require('chai-subset'));
 require('co-mocha');
 
 var request = require('koa-request');
@@ -14,12 +17,17 @@ describe('Geocode api', function () {
         expect(res.body).to.include.keys('error');
     };
 
+    var testedResult = {
+        "lat": 31.768319,
+        "lon": 35.21371
+    };
+
     var fakeResult = {
         "results": [{
             "geometry": {
                 "location": {
-                    "lat": 31.768319,
-                    "lng": 35.21371
+                    lat: testedResult.lat,
+                    lng: testedResult.lon
                 }
             }
         }]
@@ -86,15 +94,14 @@ describe('Geocode api', function () {
             })
             .expect(function (res) {
                 expect(res.body).to.be.an('object');
-                expect(Object.keys(res.body).length).to.equal(2);
-                expect(res.body).to.include.keys('lat', 'lon');
+                res.body.should.containSubset(testedResult);
             })
             .expect(200)
             .end();
     });
 
     it('should cache geoCode after the first time', function* () {
-        
+
         yield agent
             .get('/geoCode')
             .query({
